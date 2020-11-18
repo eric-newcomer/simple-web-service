@@ -29,6 +29,7 @@ const UploadFile = () => {
       const fileAsBase64 = await toBase64(file);
       //console.log(fileAsBase64);
       formData.append('fileAsBase64', fileAsBase64);
+      formData.append('filename', file.name);
 
       try {
          const res = await axios.post("/post", formData, {
