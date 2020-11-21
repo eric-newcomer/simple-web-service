@@ -2,7 +2,7 @@ const express = require('express');
 const formidable = require('express-formidable');
 const fs = require('fs');
 const ExifImage = require('exif').ExifImage;
-//const request = require('request');
+const request = require('request');
 const fetch = require('node-fetch');
 
 
@@ -12,13 +12,19 @@ const port = process.env.PORT || 8081;
 app.use(express.json());
 app.use(formidable());
 
-const getZipFromLatLong = async (lat, long) => {
-   const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`)
-      .then(response => response.json());
- };
+var zip = '';
+
+function getZipFromLatLong(lat, long, callback) {
+   request(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`, (err, response, body) => {
+      if (!err && response.statusCode == 200) {
+         const obj = JSON.parse(body);
+         callback(obj['postcode']);
+      }   
+   });
+};
 
 // getZipcode: String filename -> String Zipcode
-const getZipcode = async filename => {
+const getZipcode = filename => {
    try {
       new ExifImage({ image : filename }, (error, exifData) => {
           if (error)
@@ -45,12 +51,11 @@ const getZipcode = async filename => {
 						gps['longitude'] = null;
                }
                console.log(gps);
-               const response = await getZipFromLatLong(gps['latitude'], gps['longitude']);
-               console.log("resp: ",response);
-               
-               //const {postcode} = res.data;
-               //console.log("postcode: ",postcode);
-               //return postcode;
+               getZipFromLatLong(gps['latitude'], gps['longitude'], (res) => {
+                  zip = res;
+               });
+               console.log("HERE: ",zip);
+               return zip;
             } else {
                console.log("GPS info not found");
                return "";
