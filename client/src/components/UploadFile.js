@@ -26,7 +26,6 @@ const UploadFile = () => {
    const onSubmit = async e => {
       e.preventDefault();
       const formData = new FormData();
-      // console.log(file.name);
       const fileAsBase64 = await toBase64(file);
       //console.log(fileAsBase64);
       formData.append('fileAsBase64', fileAsBase64);
@@ -43,8 +42,7 @@ const UploadFile = () => {
          setIsJpeg(isJPG);
          setMessage(msg);
          setZipCode(zipCode);
-         console.log("Result: ",isJPG);
-         // TODO: return zipcode!
+         console.log("Result ZIP Code: ", zipCode);
       } catch (err) {
          // handle error
          console.log(err);
@@ -72,12 +70,12 @@ const UploadFile = () => {
                className="btn btn-primary btn-block mt-4" 
             />
          </form>
-         {(message && isJpeg) ? (
+         {(message && isJpeg && zipCode) ? (
             <Zoom>
                <div className='row mt-5'>
                   <div className='col-md-6 m-auto'>
                      <h3 className='text-center' style={{color: 'green'}}>{message}</h3>
-                     <h3 className='text-center'>{zipCode}</h3>
+                     <h4 className='text-center'>ZIP Code: {zipCode}</h4>
                   </div>
                </div>
             </Zoom>
