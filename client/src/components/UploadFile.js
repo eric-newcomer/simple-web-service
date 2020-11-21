@@ -10,10 +10,12 @@ const UploadFile = () => {
    const [isJpeg, setIsJpeg] = useState(false);
    const [message, setMessage] = useState('');
    const [zipCode, setZipCode] = useState('');
+   const [messageState, setMessageState] = useState(false);
 
    const onChange = e => {
       setFile(e.target.files[0]);
       setFilename(e.target.files[0].name);
+      setMessageState(false);
    }
 
    const toBase64 = fileIn => new Promise((resolve, reject) => {
@@ -24,7 +26,14 @@ const UploadFile = () => {
   });
 
    const onSubmit = async e => {
+      setMessageState(false);
       e.preventDefault();
+      if (!file) {
+         console.log("Please upload a file");
+         setMessage("Please upload a file");
+         setMessageState(true);
+         return;
+      }
       const formData = new FormData();
       const fileAsBase64 = await toBase64(file);
       //console.log(fileAsBase64);
@@ -42,10 +51,17 @@ const UploadFile = () => {
          setIsJpeg(isJPG);
          setMessage(msg);
          setZipCode(zipCode);
+         setMessageState(true);
          console.log("Result ZIP Code: ", zipCode);
       } catch (err) {
-         // handle error
-         console.log(err);
+         // Catch server errors
+         if (err.response.status === 500) {
+            setMessage('There was a problem with the server');
+            setMessageState(true);
+         } else {
+            setMessage(err.response.data.msg);
+            setMessageState(true);
+         }
       }
    }
 
@@ -70,7 +86,17 @@ const UploadFile = () => {
                className="btn btn-primary btn-block mt-4" 
             />
          </form>
-         {(message && isJpeg && zipCode) ? (
+         {(message === "Please upload a file" && messageState) ? (
+            <Zoom>
+               <div className='row mt-5'>
+                  <div className='col-md-6 m-auto'>
+                     <h3 className='text-center' style={{color: 'red'}}>{message}</h3>
+                     {/* <h4 className='text-center'>ZIP Code: {zipCode}</h4> */}
+                  </div>
+               </div>
+            </Zoom>
+         ) :
+         (message && isJpeg && zipCode  && messageState) ? (
             <Zoom>
                <div className='row mt-5'>
                   <div className='col-md-6 m-auto'>
@@ -79,7 +105,7 @@ const UploadFile = () => {
                   </div>
                </div>
             </Zoom>
-         ) : (message && !isJpeg) ? (
+         ) : (message && !isJpeg  && messageState) ? (
             <Zoom>
                <div className='row mt-5'>
                   <div className='col-md-6 m-auto'>
