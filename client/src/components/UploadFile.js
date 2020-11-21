@@ -9,6 +9,7 @@ const UploadFile = () => {
    const [filename, setFilename] = useState('Choose image');
    const [isJpeg, setIsJpeg] = useState(false);
    const [message, setMessage] = useState('');
+   const [zipCode, setZipCode] = useState('');
 
    const onChange = e => {
       setFile(e.target.files[0]);
@@ -38,9 +39,10 @@ const UploadFile = () => {
             }
          });
 
-         const {base64, isJPG, msg} = res.data;
+         const {base64, isJPG, msg, zipCode} = res.data;
          setIsJpeg(isJPG);
          setMessage(msg);
+         setZipCode(zipCode);
          console.log("Result: ",isJPG);
          // TODO: return zipcode!
       } catch (err) {
@@ -75,7 +77,7 @@ const UploadFile = () => {
                <div className='row mt-5'>
                   <div className='col-md-6 m-auto'>
                      <h3 className='text-center' style={{color: 'green'}}>{message}</h3>
-                     {/* <img style={{ width: '100%' }} src={uploadedFile.filePath} alt='' /> */}
+                     <h3 className='text-center'>{zipCode}</h3>
                   </div>
                </div>
             </Zoom>

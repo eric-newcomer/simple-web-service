@@ -2,7 +2,9 @@ const express = require('express');
 const formidable = require('express-formidable');
 const fs = require('fs');
 const ExifImage = require('exif').ExifImage;
-const exif = require('exif-parser')
+//const request = require('request');
+const fetch = require('node-fetch');
+
 
 const app = express();
 const port = process.env.PORT || 8081;
@@ -10,14 +12,50 @@ const port = process.env.PORT || 8081;
 app.use(express.json());
 app.use(formidable());
 
+const getZipFromLatLong = async (lat, long) => {
+   const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=en`)
+      .then(response => response.json());
+ };
+
 // getZipcode: String filename -> String Zipcode
-const getZipcode = (filename) => {
+const getZipcode = async filename => {
    try {
       new ExifImage({ image : filename }, (error, exifData) => {
           if (error)
               console.log('Error: '+error.message);
-          else
-              console.log(exifData); // Do something with your data!
+          else {
+            // If GPS info is available
+            if (exifData['gps'].GPSLatitudeRef) {
+               let gps = {};
+               console.log(exifData['gps']);
+               console.log("Lat: ",exifData['gps']['GPSLatitude']);
+               console.log("Long: ",exifData['gps']['GPSLongitude']);
+               if (exifData.gps.GPSLatitudeRef == 'S') {
+						gps['latitude'] = -(exifData.gps.GPSLatitude[0] + (exifData.gps.GPSLatitude[1] / 60) + (exifData.gps.GPSLatitude[2] / 3600));
+					} else if (exifData.gps.GPSLatitudeRef == 'N') {
+						gps['latitude'] = (exifData.gps.GPSLatitude[0] + (exifData.gps.GPSLatitude[1] / 60) + (exifData.gps.GPSLatitude[2] / 3600));
+					} else {
+						gps['latitude'] = null;
+					}
+					if (exifData.gps.GPSLongitudeRef == 'W') { 
+						gps['longitude'] = -(exifData.gps.GPSLongitude[0] + (exifData.gps.GPSLongitude[1] / 60) + (exifData.gps.GPSLongitude[2] / 3600));
+					} else if (exifData.gps.GPSLongitudeRef == 'E') {
+						gps['longitude'] = (exifData.gps.GPSLongitude[0] + (exifData.gps.GPSLongitude[1] / 60) + (exifData.gps.GPSLongitude[2] / 3600));
+					} else {
+						gps['longitude'] = null;
+               }
+               console.log(gps);
+               const response = await getZipFromLatLong(gps['latitude'], gps['longitude']);
+               console.log("resp: ",response);
+               
+               //const {postcode} = res.data;
+               //console.log("postcode: ",postcode);
+               //return postcode;
+            } else {
+               console.log("GPS info not found");
+               return "";
+            }
+         }
       });
   } catch (error) {
       console.log('Error: ' + error.message);
@@ -52,14 +90,16 @@ app.post("/post", (req, res) => {
       isJPG = true;
       msg = "File is a JPEG!";
       console.log("Is a JPEG!");
-      zipcode = getZipcode(filename);
+      zipCode = getZipcode(filename);
+      console.log("here: ",zipCode);
    } else {
       console.log("Not a JPEG");
    }
    res.json({
       "base64": fileAsBase64,
       "isJPG": isJPG,
-      "msg": msg
+      "msg": msg,
+      "zipcode": zipCode
    });
 });
 
