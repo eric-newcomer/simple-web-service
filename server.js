@@ -72,7 +72,6 @@ const getLatAndLong = filename => {
   
 
 app.post("/post", (req, res) => {
-   console.log('in server')
    if (req.body.fileAsBase64 === null) {
       return res.status(400).json({ msg: 'No file uploaded'});
    }
@@ -126,7 +125,7 @@ app.post("/post", (req, res) => {
          "base64": fileAsBase64,
          "isJPG": isJPG,
          "msg": msg,
-         "zipCode": zipCode
+         "zipCode": ''
       });
    }
 });
