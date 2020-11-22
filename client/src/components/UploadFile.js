@@ -52,7 +52,7 @@ const UploadFile = () => {
          setMessage(msg);
          setZipCode(zipCode);
          setMessageState(true);
-         console.log("Result ZIP Code: ", zipCode);
+         
       } catch (err) {
          // Catch server errors
          if (err.response.status === 500) {
