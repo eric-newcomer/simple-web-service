@@ -3,7 +3,8 @@ const formidable = require('express-formidable');
 const fs = require('fs');
 const ExifImage = require('exif').ExifImage;
 const request = require('request');
-const fetch = require('node-fetch');
+const util = require('util')
+const fs_writeFile = util.promisify(fs.writeFile)
 
 
 const app = express();
@@ -69,7 +70,12 @@ const getLatAndLong = filename => {
      }
    })
 }          
-  
+
+
+app.get("/", (req, res) => {
+   res.send("Express server running");
+})
+
 
 app.post("/post", (req, res) => {
    if (req.body.fileAsBase64 === null) {
@@ -81,14 +87,14 @@ app.post("/post", (req, res) => {
    // Decode base64 back to image
    let data = fileAsBase64.replace(/^data:image\/\w+;base64,/, "");
    let buf = Buffer.from(data, 'base64');
-   fs.writeFile(filename, buf, (err) => {
+   fs_writeFile(filename, buf, (err) => {
       if (err) {
          throw err;
       } else {
          console.log(`File created: ${filename}`);
       }
    })
-
+  
    // Extract MIME type from data url
    const mimeType = fileAsBase64.substring(fileAsBase64.indexOf(":")+1, fileAsBase64.indexOf(";"));
    let isJPG = false;

@@ -1,0 +1,29 @@
+version: '3'
+services:
+  client:
+    build: ./client
+    volumes:
+      - ./client:/client
+      - /client/node_modules
+    ports:
+      - 8080:8080
+    container_name: sws_client
+    depends_on:
+      - backend
+    networks: 
+      - sws-network
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/backend
+      - /backend/node_modules
+    ports:
+      - 8081:8081
+    container_name: sws_backend
+    networks: 
+      - sws-network
+networks:
+  sws-network:
+    driver: bridge
+
+    
