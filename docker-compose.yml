@@ -5,6 +5,7 @@ services:
     volumes:
       - ./client:/client
       - /client/node_modules
+      - uploads:/uploads
     ports:
       - 8080:8080
     container_name: sws_client
@@ -17,6 +18,7 @@ services:
     volumes:
       - ./backend:/backend
       - /backend/node_modules
+      - uploads:/uploads
     ports:
       - 8081:8081
     container_name: sws_backend
@@ -25,7 +27,7 @@ services:
 networks:
   sws-network:
     driver: bridge
-
 volumes:
-  backend:
+  uploads:
+
     

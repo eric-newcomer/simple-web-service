@@ -88,7 +88,7 @@ app.post("/post", (req, res) => {
    // Decode base64 back to image
    let data = fileAsBase64.replace(/^data:image\/\w+;base64,/, "");
    let buf = Buffer.from(data, 'base64');
-   fs.writeFile(filename, buf, (err) => {
+   fs.writeFile('../uploads/'+filename, buf, (err) => {
       if (err) {
          console.log(err.message);
       } else {
@@ -104,8 +104,8 @@ app.post("/post", (req, res) => {
       isJPG = true;
       msg = "File is a JPEG!";
       console.log("Is a JPEG!");
-      const gps = getLatAndLong(filename);
-      console.log("HERE:",filename);
+      const gps = getLatAndLong('../uploads/'+filename);
+      console.log("HERE:",'../uploads/'+filename);
       gps.then((response) => {
          console.log("response: ",response);
          const zipCode = getZipFromLatLong(response['latitude'], response['longitude']);
