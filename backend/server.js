@@ -4,8 +4,6 @@ const fs = require('fs');
 const ExifImage = require('exif').ExifImage;
 const request = require('request');
 const util = require('util')
-const fs_writeFile = util.promisify(fs.writeFile)
-
 
 const app = express();
 const port = process.env.PORT || 8081;

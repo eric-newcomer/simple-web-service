@@ -36,7 +36,6 @@ const UploadFile = () => {
       }
       const formData = new FormData();
       const fileAsBase64 = await toBase64(file);
-      //console.log(fileAsBase64);
       formData.append('fileAsBase64', fileAsBase64);
       formData.append('filename', file.name);
 
@@ -91,7 +90,6 @@ const UploadFile = () => {
                <div className='row mt-5'>
                   <div className='col-md-6 m-auto'>
                      <h3 className='text-center' style={{color: 'red'}}>{message}</h3>
-                     {/* <h4 className='text-center'>ZIP Code: {zipCode}</h4> */}
                   </div>
                </div>
             </Zoom>
