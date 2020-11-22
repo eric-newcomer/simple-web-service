@@ -44,7 +44,7 @@ To deploy to Docker, make sure you have [Docker](https://www.docker.com/get-star
 ```
 docker --version
 ```
-Go to the `client/` directory and change the "proxy" in `package.json` from "http://localhost:8081" to "http://sws_backend:8081.
+Go to the `client/` directory and change the "proxy" in `package.json` from "http://localhost:8081" to "http://sws_backend:8081".
 
 From:
 ![localhost](readme_img/localhost_pic.png)

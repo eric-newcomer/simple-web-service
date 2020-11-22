@@ -1,7 +1,4 @@
 node_modules
 .DS_Store
 todo.txt
-*.jpg
-*.jpeg
-*.png
-*.pdf
+uploads/
