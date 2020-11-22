@@ -26,4 +26,6 @@ networks:
   sws-network:
     driver: bridge
 
+volumes:
+  backend:
     

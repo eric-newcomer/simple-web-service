@@ -34,6 +34,7 @@ const getLatAndLong = filename => {
          new ExifImage({ image : filename }, (error, exifData) => {
             if (error) {
                console.log('Error: '+error.message);
+               console.log(filename);
                reject(error.message);
             }
             else {
@@ -87,9 +88,9 @@ app.post("/post", (req, res) => {
    // Decode base64 back to image
    let data = fileAsBase64.replace(/^data:image\/\w+;base64,/, "");
    let buf = Buffer.from(data, 'base64');
-   fs_writeFile(filename, buf, (err) => {
+   fs.writeFile(filename, buf, (err) => {
       if (err) {
-         throw err;
+         console.log(err.message);
       } else {
          console.log(`File created: ${filename}`);
       }
@@ -104,6 +105,7 @@ app.post("/post", (req, res) => {
       msg = "File is a JPEG!";
       console.log("Is a JPEG!");
       const gps = getLatAndLong(filename);
+      console.log("HERE:",filename);
       gps.then((response) => {
          console.log("response: ",response);
          const zipCode = getZipFromLatLong(response['latitude'], response['longitude']);
