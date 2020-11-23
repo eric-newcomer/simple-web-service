@@ -39,6 +39,24 @@ In client/
 nodemon start
 ```
 
+## Run tests
+For this application, I wrote unit tests using Mocha, a JS test framework for synchronous and asynchronous testing. I also used the supertest library for making requests.
+
+To get started with running the tests, verify that you have `mocha` and `supertest` installed by checking the package.json file in the backend/ directory, or by running the following commands in the backend/ directory:
+```
+npm install mocha supertest
+```
+
+To run the test suite, cd into the backend/ directory and run the command `npm test`.
+```
+cd backend/
+```
+```
+npm test
+```
+The output should look like the following:
+![test_output](readme_img/evt_tests.png)
+
 ## Docker
 To deploy to Docker, make sure you have [Docker](https://www.docker.com/get-started) installed on your machine. Check your installation by running ```docker --version```
 ```
@@ -55,3 +73,12 @@ Finally, you can run the images with the following command from the root directo
 ```
 docker-compose up
 ```
+
+## Demo Scenarios
+The following are common scenarios that occur with different file inputs.
+
+### File is a JPEG, but no GPS metadata is available
+![main_no_gps](readme_img/main_no_gps.gif)
+
+### File is not a JPEG
+![main_png](readme_img/main_png.gif)

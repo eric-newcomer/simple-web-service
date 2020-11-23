@@ -71,9 +71,9 @@ const getLatAndLong = filename => {
    })
 }          
 
-
+// Basic GET endpoint. Verify server is running 
 app.get("/", (req, res) => {
-   res.send("Express server running");
+   return res.status(200).json({ msg: "Express server running"});
 })
 
 
@@ -83,13 +83,14 @@ app.post("/post", (req, res) => {
    }
    const fileAsBase64 = req.fields.fileAsBase64;
    const filename = req.fields.filename;
-
+   
    // Decode base64 back to image
    let data = fileAsBase64.replace(/^data:image\/\w+;base64,/, "");
    let buf = Buffer.from(data, 'base64');
    fs.writeFile('../uploads/'+filename, buf, (err) => {
       if (err) {
          console.log(err.message);
+         throw err;
       } else {
          console.log(`File created: ${filename}`);
       }
@@ -143,5 +144,6 @@ app.listen(port, () => {
 
 module.exports = {
    getZipFromLatLong,
-   getLatAndLong
+   getLatAndLong,
+   app
 }

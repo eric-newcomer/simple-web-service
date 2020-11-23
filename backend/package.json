@@ -8,12 +8,13 @@
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\" ",
-    "test": "mocha test/test-backend.js"
+    "test": "mocha test/test-backend.js --timeout 10000"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai": "^4.2.0",
     "exif": "^0.6.0",
     "exif-parser": "^0.1.12",
     "express": "^4.17.1",
@@ -23,6 +24,7 @@
     "node-fetch": "^2.6.1",
     "request": "^2.88.2",
     "should": "^13.2.3",
+    "supertest": "^6.0.1",
     "util": "^0.12.3"
   },
   "devDependencies": {

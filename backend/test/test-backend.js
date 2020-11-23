@@ -1,6 +1,8 @@
 var assert = require('assert');
 var should = require('should');
 var server = require("../server");
+var request = require('supertest');
+
 
 // Promise Test: getZipFromLatLong
 describe('getZipFromLatLong', function() {
@@ -26,10 +28,36 @@ describe('getLatAndLong', function() {
          "longitude": -117.42530833333333
       });
    });
+   it('should properly fail with wrong GPS info for JPG with GPS metadata', function() {
+      return server.getLatAndLong("../uploads/IMG_9447.jpeg").should.eventually.not.equal({
+         "latitude": 47.66025277777778,
+         "longitude": -117.42530833333333
+      });
+   });
    it('should return no GPS info for JPG without GPS metadata', function() {
       return server.getLatAndLong("../uploads/george.jpg").should.be.rejectedWith(Error);
+   });
+   it('should return no GPS info for JPG without GPS metadata', function() {
+      return server.getLatAndLong("../uploads/cover_linkedin.jpg").should.be.rejectedWith(Error);
+   });
+   it('should return no GPS info for PNG', function() {
+      return server.getLatAndLong("../uploads/Careers in tech.jpg").should.be.rejectedWith(Error);
    });
    
 });
 
+// server test: verify that the server is running
+describe('Verify the server is running', function() {
+   it('should return JSON to verify server is running', function(done) {
+      request(server.app)
+         .get('/')
+         .end((err, res) => {
+            if (err) return done(err);
+            //console.log(res.body);
+            res.status.should.equal(200);
+            res.body["msg"].should.equal("Express server running");
+            done();
+          });
+   })
+});
 
